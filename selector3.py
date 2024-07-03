@@ -135,18 +135,17 @@ def getSelects(entrada,regexx):
     return selects
 
 '''esta solucion se basa mas en string para y no en stream'''
-def solucion(select,salida, dist):
+def solucion(path_entrada, path_salida,  regexx, filtro_distancias):
     """select es el archivo de entrada que son muchos selects separados por lineas en blanco,
     dist es un parametro para filtrar por distancia los archivos de salida"""
-    regexx = regexx =  re.compile(r'\s{79}\n')
-    selects = getSelects(select,regexx)
+    selects = getSelects(path_entrada,regexx)
     # print(selects)
-    with open(salida,'w') as f:
+    with open(path_salida,'w') as f:
         """abre el archivo de salida como f para copiar en el los datos parecidos al dummy"""
         f.write("id            fecha       hora      lat     lon      depth  mgC  mgL  mgW  rms  stat  ch  amplit   dis\n")
         for n in selects:
             # print(n)
-            datos = getData(n,dist)
+            datos = getData(n,filtro_distancias)
             # print(datos)
             if datos:
                 for l in datos:
@@ -155,12 +154,12 @@ def solucion(select,salida, dist):
 
 # '''Para casos puntuales: un solo select'''         
 filtro_distancias = 300
-nombreArchivo = '2018 SDD Dominican data.out'
-carpeta = 'entradas'
-select = os.path.join(carpeta,nombreArchivo) #genera el path carpeta//nombreArchivo
+select = '2020 SDD Dominican data.out' #genera el path carpeta//nombreArchivo
 # dist = 300
-salida = f'dis-menor-{filtro_distancias}-{nombreArchivo[:-4]}.txt'
-solucion(select,salida,filtro_distancias)
+path_entrada = os.path.join('entradas',select)
+path_salida = os.path.join('salidas',f'{select[:-4]}.txt')
+regexx =  re.compile(r'\s{79}\n')
+solucion(path_entrada, path_salida, regexx, filtro_distancias)
 
 '''Para transformar un listado de archivos en una carpeta'''
 # def filtrarLista(dist):
